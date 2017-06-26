@@ -1,6 +1,9 @@
-const yargs = require('yargs');
+/** Require statements */
 
+const yargs = require('yargs');
 const notes = require('./notes.js');
+
+/** Configuring Yargs */
 
 var arguments = yargs.command('add', 'Add a note', {
     title: {
@@ -30,6 +33,8 @@ var arguments = yargs.command('add', 'Add a note', {
     })
     .help();
 
+/** Fetching the arguments using Yargs */
+
 var command = yargs.argv._[0];
 var note = {
     title : yargs.argv.title,
@@ -39,32 +44,38 @@ var note = {
 switch (command) {
     case "add": {
         console.log("Adding note");
-        notes.logNote(note);
-        console.log(notes.addNote(note));
+        var result = notes.addNote(note);
+        if(result.status === 200){
+            notes.logNote(note);
+        }
+        console.log(result.message);
         break;
     }
     case "list": {
         console.log("Fetching notes");
-        notes.getNotes().forEach(function(note) {
+        var result = notes.getNotes();
+        result.data.forEach(function(note) {
             notes.logNote(note);
         }, this);
+        if(!result.data.length){
+            console.log("--------");
+            console.log("No Notes to show");
+        }
         break;
     }
     case "get": {
         console.log("Fetching note");
-        var fetchedNote = notes.getNote(note.title);
-        if(fetchedNote){
-            notes.logNote(fetchedNote);
+        var result = notes.getNote(note.title);
+        if(result.status === 200){
+            notes.logNote(result.data);
         }
-        else {
-            console.log('--------');
-            console.log("Note not found");
-        }
+        console.log(result.message);
         break;
     }
     case "remove": {
         console.log("Removing note");
-        notes.removeNote(note.title);
+        var result = notes.removeNote(note.title);
+        console.log(result.message);
         break;
     }
     default: {

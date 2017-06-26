@@ -1,4 +1,7 @@
+/** Require statment */
 const fs = require('fs');
+
+/** Helper Method for Notes application */
 
 var fetchNotes = () => {
     try {
@@ -27,36 +30,72 @@ var logNote = (note) => {
     console.log('-------');
 }
 
+var resultFormat = (status, data, message) => {
+    var result = {};
+    result.status = status;
+    result.data = data;
+    result.message = message;
+    return result;
+}
+
+
+/** Module functions for  notes applciation */
+
 var addNote = (note) => {
-    message = "";
+    var notes = fetchNotes(),
+        output = {};
+
     if(findDuplicates(note)){
-        message = "Note Already exists";
+        output = resultFormat(500, null, "Note Already exists");
     }
     else {
-        var notes = fetchNotes();
         notes.push(note);
         saveNotes(notes);
-        message = "Note Added successfully";
+        output = resultFormat(200, notes, "Note Added successfully");
     }
-    return message;
+    return output;
 }
 
 var getNotes = () => {
-    var notes = fetchNotes();
-    return notes;
+    var notes = fetchNotes(),
+        output = {};
+    
+    output = resultFormat(200, notes, "Notes retrieved successfully");
+    return output;
 }
 
 var getNote = (title) => {
-    var notes = fetchNotes();
-    var note = notes.filter((note) => note.title === title);
-    return note.length ? note[0] : undefined;
+    var notes = fetchNotes(),
+        note = notes.filter((note) => note.title === title),
+        output = {};
+
+    if(note.length){
+        output = resultFormat(200, note[0], "Note retrieved successfully");
+    }
+    else {
+        output = resultFormat(404, null, "Note not found");
+    }
+    return output;
 }
 
 var removeNote = (title) => {
-    var notes = fetchNotes();
-    var removedNotes = notes.filter((note) => note.title !== title);
-    saveNotes(removedNotes);
+    var notes = fetchNotes(),
+        removedNotes = [],
+        indexOfNoteToBeRemoved = notes.map((note) => note.title).indexOf(title),
+        output = {};
+
+    if(indexOfNoteToBeRemoved != -1){
+        removedNotes = notes.filter((note) => note.title !== title);
+        saveNotes(removedNotes);
+        output = resultFormat(200, removedNotes, "Note removed successfully");
+    }
+    else {
+        output = resultFormat(500, null, "Note doesn't exists");
+    }
+    return output;
 }
+
+/** Module export */
 
 module.exports = {
     addNote,
