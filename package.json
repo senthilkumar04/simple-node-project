@@ -1,20 +1,19 @@
 {
   "name": "node-sandbox",
   "version": "1.0.0",
-  "description": "",
+  "description": "simple node project using yargs and es6 syntax. mocha is used as the test framework",
   "main": "app.js",
   "dependencies": {
-    "expect": "^1.20.2",
     "yargs": "^8.0.1"
   },
   "devDependencies": {
     "mocha": "^3.4.2",
-    "nodemon": "^1.11.0"
+    "expect": "^1.20.2"
   },
   "scripts": {
     "test": "mocha **/*.test.js",
     "test-watch": "nodemon --exec 'npm test'"
   },
-  "author": "",
+  "author": "SENTHILKUMAR",
   "license": "ISC"
 }
